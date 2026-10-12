@@ -1,0 +1,76 @@
+<div style="font-family: Arial, Helvetica, sans-serif; background-color: #ffffff; border: 2px solid #2980b9; border-radius: 8px; padding: 22px; width: 100%; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+    <h3 style="color: #1b4f72; margin-top: 0; font-size: 22px; display: flex; align-items: center;">
+        <span style="background-color: #2980b9; color: #ffffff; padding: 4px 10px; border-radius: 4px; font-size: 14px; margin-right: 10px;">APP 1</span>
+        Interactive Stomach Stretch & Vagus Nerve Simulator
+    </h3>
+    <p style="font-size: 14px; color: #566573;">Drag the slider below to fill the animal's stomach with food. Observe how the firing frequency (Hz) along the vagus nerve speeds up as the stomach expands, triggering satiety in the brain.</p>
+
+    <!-- SLIDER CONTROLLER -->
+    <div style="background-color: #eaf2f8; padding: 20px; border-radius: 6px; margin: 20px 0; text-align: center;">
+        <label for="volumeSlider" style="font-weight: bold; font-size: 18px; color: #1b4f72; display: block; margin-bottom: 10px;">
+            Stomach Meal Volume: <span id="vol-disp" style="color: #c0392b; font-size: 22px;">0</span> Liters
+        </label>
+        <input type="range" id="volumeSlider" min="0" max="50" value="0" step="1" style="width: 80%; max-width: 500px; height: 10px; cursor: pointer;" 
+            oninput="
+                var v = parseInt(this.value);
+                document.getElementById('vol-disp').innerText = v;
+                var lHz = 2;
+                if(v <= 10) { lHz = Math.round(2 + (v/10)*(12-2)); }
+                else if(v <= 25) { lHz = Math.round(12 + ((v-10)/15)*(45-12)); }
+                else { lHz = Math.round(45 + ((v-25)/25)*(120-45)); }
+                
+                var eHz = 5;
+                if(v <= 10) { eHz = Math.round(5 + (v/10)*(15-5)); }
+                else if(v <= 25) { eHz = Math.round(15 + ((v-10)/15)*(30-15)); }
+                else { eHz = Math.round(30 + ((v-25)/25)*(65-30)); }
+
+                document.getElementById('lion-hz-val').innerText = lHz;
+                document.getElementById('ele-hz-val').innerText = eHz;
+                
+                document.getElementById('lion-bar-fill').style.width = Math.min(100, Math.round((lHz/120)*100)) + '%';
+                document.getElementById('ele-bar-fill').style.width = Math.min(100, Math.round((eHz/65)*100)) + '%';
+
+                var statusTxt = 'Empty / Hungry';
+                var statusBg = '#e74c3c';
+                if(v >= 45) { statusTxt = 'FULL CAPACITY: Satiety Signal Active (Stop Eating!)'; statusBg = '#27ae60'; }
+                else if(v >= 20) { statusTxt = 'Half Full: Moderate Signal Frequency'; statusBg = '#f39c12'; }
+                else if(v > 0) { statusTxt = 'Light Meal: Low Nerve Pulse Frequency'; statusBg = '#3498db'; }
+                
+                var statusElem = document.getElementById('satiety-alert');
+                statusElem.innerText = statusTxt;
+                statusElem.style.backgroundColor = statusBg;
+            " />
+        <div style="display: flex; justify-content: space-between; width: 80%; max-width: 500px; margin: 5px auto 0 auto; font-size: 12px; color: #7f8c8d;">
+            <span>0 L (Empty)</span>
+            <span>10 L (Snack)</span>
+            <span>25 L (Half Full)</span>
+            <span>50 L (Full Capacity)</span>
+        </div>
+    </div>
+
+    <!-- SIMULATOR DISPLAY PANELS -->
+    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px;">
+        <!-- LION DISPLAY -->
+        <div style="flex: 1; min-width: 260px; background-color: #fdf2e9; border: 1px solid #e5e7e9; padding: 15px; border-radius: 6px;">
+            <h4 style="margin-top: 0; color: #a04000;">🦁 Lion Vagus Nerve Signal</h4>
+            <p style="font-size: 24px; font-weight: bold; margin: 10px 0; color: #a04000;"><span id="lion-hz-val">2</span> Hz <span style="font-size: 13px; font-weight: normal; color: #7f8c8d;">(signals per sec)</span></p>
+            <div style="background-color: #edbb99; height: 16px; border-radius: 8px; width: 100%; overflow: hidden;">
+                <div id="lion-bar-fill" style="background-color: #d35400; height: 100%; width: 2%; transition: width 0.2s ease;"></div>
+            </div>
+        </div>
+
+        <!-- ELEPHANT DISPLAY -->
+        <div style="flex: 1; min-width: 260px; background-color: #eaf2f8; border: 1px solid #e5e7e9; padding: 15px; border-radius: 6px;">
+            <h4 style="margin-top: 0; color: #1b4f72;">🐘 Elephant Vagus Nerve Signal</h4>
+            <p style="font-size: 24px; font-weight: bold; margin: 10px 0; color: #1b4f72;"><span id="ele-hz-val">5</span> Hz <span style="font-size: 13px; font-weight: normal; color: #7f8c8d;">(signals per sec)</span></p>
+            <div style="background-color: #a9cce3; height: 16px; border-radius: 8px; width: 100%; overflow: hidden;">
+                <div id="ele-bar-fill" style="background-color: #2980b9; height: 100%; width: 8%; transition: width 0.2s ease;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BRAIN SATIETY ALERT BADGE -->
+    <div id="satiety-alert" style="margin-top: 20px; padding: 12px; background-color: #e74c3c; color: #ffffff; font-weight: bold; text-align: center; border-radius: 6px; transition: background-color 0.3s ease;">
+        Empty / Hungry
+    </div>
+</div>
